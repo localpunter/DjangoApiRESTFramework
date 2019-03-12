@@ -1,0 +1,37 @@
+ALL THE BELOW ACTIONS ARE PERFORMED IN THE TERMINAL!
+
+1. Create a directory and navigate into it: (Either in explorer (new folder) or in terminal)
+'mkdir <name>' then cd <name>
+
+2. Set up a virtual environment: (this allows you to create many environments that run independantly)
+'python -m venv <environment name>'
+
+3. Navigate to the Scripts folder:
+'cd <environment name>' then 'cd Scripts'
+
+4. Activate the virtual environment: (this will show the environment name before the path - (envName) C:\etc\etc.)
+'activate' - ('deactivate' undoes this)
+
+5. Now come back 2 levels:
+'cd ..' and 'cd ..'
+
+6. Install Django: (this will install the lastest version in your environment)
+pip install django
+
+7. Update pip: (if there is a newer version you will be notified)
+pip install --upgrade pip
+
+8. Now create the Django project: (adding the ' .' at the end saves another folder being created with the same name)
+'django-admin startproject <project name .>'
+
+9. Now start the app. Call <name> what you want and then add to INSTALLED_APPS in settings.py
+'python manage.py startapp <name>'
+
+10. Create a SQL database:
+'python manage.py migrate'
+
+11. Create a superuser for the login credentials: (This asks for Username, Email & Pw. Username & Pw are all you need)
+'python manage.py createsuperuser'
+
+12. Start running the server: (you will see a lot of info including 'Starting development server at http://127.0.0.1:8000/'. This is the address of the server)
+'python manage.py runserver'
