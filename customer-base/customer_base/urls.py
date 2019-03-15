@@ -25,10 +25,10 @@ from core.views import (
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register('customers', CustomerViewSet)
-router.register('professions', ProfessionViewSet)
-router.register('data-sheet', DataSheetViewSet)
-router.register('documents', DocumentViewSet)
+router.register('customers', CustomerViewSet, base_name = "customer")
+router.register('professions', ProfessionViewSet, base_name = "profession")
+router.register('data-sheet', DataSheetViewSet, base_name = "data_sheet")
+router.register('documents', DocumentViewSet, base_name = "document")
 
 urlpatterns = [
     path('api/', include(router.urls)),
