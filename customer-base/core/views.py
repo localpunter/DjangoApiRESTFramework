@@ -36,6 +36,20 @@ class CustomerViewSet(viewsets.ModelViewSet):
         # return Response(serializer.data)
 
 
+    """This will explicitly create a customer, attach the profession & datasheet"""
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        customer = Customer.objects.create(
+            name = data['name'], address = data['address'], data_sheet_id = data['data_sheet']
+        )
+        profession = Profession.objects.get(id = data['profession'])
+        customer.professions.add(profession)
+        customer.save()
+
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data)
+
+
 class ProfessionViewSet(viewsets.ModelViewSet):
     serializer_class = ProfessionSerializer
 
