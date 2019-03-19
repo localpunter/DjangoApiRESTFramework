@@ -16,7 +16,8 @@ class CustomerSerializer(serializers.ModelSerializer):
             'name',
             'address',
             'professions',
-            'data_sheet'
+            'data_sheet',
+            'active'
             )
 
 

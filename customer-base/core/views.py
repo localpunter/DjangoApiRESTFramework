@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from django.http.response import HttpResponseForbidden
 from .models import (
     Customer,
@@ -27,6 +28,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         customers = Customer.objects.filter(id=3)
         serializer = CustomerSerializer(customers, many=True)
         return Response(serializer.data)
+
 
 
     def retrieve(self, request, *args, **kwargs):
@@ -89,6 +91,43 @@ class CustomerViewSet(viewsets.ModelViewSet):
         customer.delete()
 
         return Response("Object removed!")
+
+    @action(detail=True)
+    def deactivate(self, request, **kwargs):
+        customer = self.get_object()
+        customer.active = False
+        customer.save()
+
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data)
+
+
+    @action(detail=False)
+    def deactivate_all(self, request, **kwargs):
+        customers = Customer.objects.all()
+        customers.update(active=False)
+
+        serializer = CustomerSerializer(customers, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False)
+    def activate_all(self, request, **kwargs):
+        customers = Customer.objects.all()
+        customers.update(active=True)
+
+        serializer = CustomerSerializer(customers, many=True)
+        return Response(serializer.data)
+
+
+    @action(detail=False, methods=['POST'])
+    def change_status(self, request, **kwargs):
+        status = request.data['active']
+
+        customers = Customer.objects.all()
+        customers.update(active=status)
+
+        serializer = CustomerSerializer(customers, many=True)
+        return Response(serializer.data)
 
 class ProfessionViewSet(viewsets.ModelViewSet):
     serializer_class = ProfessionSerializer
