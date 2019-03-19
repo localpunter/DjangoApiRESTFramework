@@ -36,14 +36,48 @@ class CustomerViewSet(viewsets.ModelViewSet):
         # return Response(serializer.data)
 
 
-    """This will explicitly create a customer, attach the profession & datasheet"""
+    """
+    This will explicitly create a customer, attach the profession & datasheet
+    """
     def create(self, request, *args, **kwargs):
         data = request.data
         customer = Customer.objects.create(
             name = data['name'], address = data['address'], data_sheet_id = data['data_sheet']
         )
         profession = Profession.objects.get(id = data['profession'])
+
         customer.professions.add(profession)
+        customer.save()
+
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data)
+
+
+    def update(self, request, *args, **kwargs):
+        customer = self.get_object()
+        data = request.data
+        customer.name = data['name']
+        customer.address = data['address']
+        customer.data_sheet_id = data['data_sheet']
+
+        profession = Profession.objects.get(id = data['profession'])
+
+        for p in customer.professions.all():
+            customer.professions.remove(p)
+
+        customer.professions.add(profession)
+        customer.save()
+
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data)
+
+
+    def partial_update(self, request, *args, **kwargs):
+        customer = self.get_object()
+        customer.name = request.data.get('name', customer.name)
+        customer.address = request.data.get('address', customer.address)
+        customer.data_sheet_id = request.data.get('data_sheet', customer.data_sheet_id)
+
         customer.save()
 
         serializer = CustomerSerializer(customer)
