@@ -19,15 +19,27 @@ from rest_framework import viewsets
 # ViewSets define the view behavior.
 class CustomerViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
+    filterset_fields = ('name', )
 
     def get_queryset(self):
-        active_customers = Customer.objects.filter(active = True)
-        return active_customers
+        address = self.request.query_params.get('address', None)
 
-    def list(self, request, *args, **kwargs):
-        customers = Customer.objects.filter(id=3)
-        serializer = CustomerSerializer(customers, many=True)
-        return Response(serializer.data)
+        if self.request.query_params.get('active') == 'False':
+            status = False
+        else:
+            status = True
+
+        if address:
+            customers = Customer.objects.filter(address__icontains=address, active=status)
+        else:
+            customers = Customer.objects.filter(active=status)
+        return customers
+
+
+    # def list(self, request, *args, **kwargs):
+    #     customers = self.get_queryset()
+    #     serializer = CustomerSerializer(customers, many=True)
+    #     return Response(serializer.data)
 
 
 
@@ -104,7 +116,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def deactivate_all(self, request, **kwargs):
-        customers = Customer.objects.all()
+        customers = self.get_queryset()
         customers.update(active=False)
 
         serializer = CustomerSerializer(customers, many=True)
@@ -112,7 +124,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def activate_all(self, request, **kwargs):
-        customers = Customer.objects.all()
+        customers = self.get_queryset()
         customers.update(active=True)
 
         serializer = CustomerSerializer(customers, many=True)
@@ -123,7 +135,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     def change_status(self, request, **kwargs):
         status = request.data['active']
 
-        customers = Customer.objects.all()
+        customers = self.get_queryset()
         customers.update(active=status)
 
         serializer = CustomerSerializer(customers, many=True)
