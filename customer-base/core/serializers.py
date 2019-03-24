@@ -9,6 +9,8 @@ from .models import (
 
 # Serializers define the API representation.
 class CustomerSerializer(serializers.ModelSerializer):
+    number_professions = serializers.SerializerMethodField()
+
     class Meta:
         model = Customer
         fields = (
@@ -17,8 +19,13 @@ class CustomerSerializer(serializers.ModelSerializer):
             'address',
             'professions',
             'data_sheet',
-            'active'
+            'active',
+            'status_message',
+            'number_professions',
             )
+
+    def get_number_professions(self, obj):
+        return obj.number_professions()
 
 
 class ProfessionSerializer(serializers.ModelSerializer):
