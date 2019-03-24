@@ -29,7 +29,7 @@ class Customer(models.Model):
             return "Customer not active"
 
 
-    def number_professions(self):
+    def number_of_professions(self):
         return self.professions.all().count()
 
 

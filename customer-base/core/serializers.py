@@ -7,25 +7,14 @@ from .models import (
     )
 
 
-# Serializers define the API representation.
-class CustomerSerializer(serializers.ModelSerializer):
-    number_professions = serializers.SerializerMethodField()
-
+class DataSheetSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Customer
+        model = DataSheet
         fields = (
             'id',
-            'name',
-            'address',
-            'professions',
-            'data_sheet',
-            'active',
-            'status_message',
-            'number_professions',
+            'description',
+            'historical_data',
             )
-
-    def get_number_professions(self, obj):
-        return obj.number_professions()
 
 
 class ProfessionSerializer(serializers.ModelSerializer):
@@ -37,15 +26,29 @@ class ProfessionSerializer(serializers.ModelSerializer):
             )
 
 
-class DataSheetSerializer(serializers.ModelSerializer):
+# Serializers define the API representation.
+class CustomerSerializer(serializers.ModelSerializer):
+    number_of_professions = serializers.SerializerMethodField()
+    data_sheet = DataSheetSerializer()
+    professions = ProfessionSerializer(many=True)
+    document_set = serializers.StringRelatedField(many=True)
+
     class Meta:
-        model = DataSheet
+        model = Customer
         fields = (
             'id',
-            'description',
-            'historical_data',
+            'name',
+            'address',
+            'professions',
+            'data_sheet',
+            'active',
+            'status_message',
+            'number_of_professions',
+            'document_set',
             )
 
+    def get_number_of_professions(self, obj):
+        return obj.number_of_professions()
 
 class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
