@@ -2,8 +2,11 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import AllowAny
 from django.http.response import HttpResponseNotAllowed
 from django_filters.rest_framework import DjangoFilterBackend
+
 from .models import (
     Customer,
     Profession,
@@ -27,6 +30,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     ordering_fields = '__all__'
     ordering = ('-id',)
     lookup_field = 'doc_num'
+    authentication_classes = [TokenAuthentication, ]
 
     def get_queryset(self):
         address = self.request.query_params.get('address', None)
@@ -149,25 +153,30 @@ class CustomerViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class ProfessionViewSet(viewsets.ModelViewSet):
+    queryset = Profession.objects.all()
     serializer_class = ProfessionSerializer
+    authentication_classes = [TokenAuthentication,]
 
-    def get_queryset(self):
-        active_professions = Profession.objects.filter(active = True)
-        return active_professions
+    # def get_queryset(self):
+    #     active_professions = Profession.objects.filter(active = True)
+    #     return active_professions
 
 
 class DataSheetViewSet(viewsets.ModelViewSet):
+    queryset = DataSheet.objects.all()
     serializer_class = DataSheetSerializer
+    permission_classes = [AllowAny,]
 
-    def get_queryset(self):
-        active_datasheets = DataSheet.objects.filter(active = True)
-        return active_datasheets
+    # def get_queryset(self):
+    #     active_datasheets = DataSheet.objects.filter(active = True)
+    #     return active_datasheets
 
 
 class DocumentViewSet(viewsets.ModelViewSet):
+    queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
-    def get_queryset(self):
-        active_documents = Document.object.filter(active = True)
-        return active_documents
+    # def get_queryset(self):
+    #     active_documents = Document.object.filter(active = True)
+    #     return active_documents
 
