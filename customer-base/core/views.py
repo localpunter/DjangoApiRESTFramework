@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.authentication import TokenAuthentication
+
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticatedOrReadOnly,
@@ -18,13 +19,13 @@ from .models import (
     Customer,
     Profession,
     DataSheet,
-    Document
+    Document,
     )
 from .serializers import (
     CustomerSerializer,
     ProfessionSerializer,
     DataSheetSerializer,
-    DocumentSerializer
+    DocumentSerializer,
     )
 from rest_framework import viewsets
 
@@ -68,21 +69,21 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
 
 
-    """
-    This will explicitly create a customer, attach the profession & datasheet
-    """
-    def create(self, request, *args, **kwargs):
-        data = request.data
-        customer = Customer.objects.create(
-            name = data['name'], address = data['address'], data_sheet_id = data['data_sheet']
-        )
-        profession = Profession.objects.get(id = data['profession'])
+    # """
+    # This will explicitly create a customer, attach the profession & datasheet
+    # """
+    # def create(self, request, *args, **kwargs):
+    #     data = request.data
+    #     customer = Customer.objects.create(
+    #         name = data['name'], address = data['address'], data_sheet_id = data['data_sheet']
+    #     )
+    #     profession = Profession.objects.get(id = data['profession'])
 
-        customer.professions.add(profession)
-        customer.save()
+    #     customer.professions.add(profession)
+    #     customer.save()
 
-        serializer = CustomerSerializer(customer)
-        return Response(serializer.data)
+    #     serializer = CustomerSerializer(customer)
+    #     return Response(serializer.data)
 
 
     def update(self, request, *args, **kwargs):
